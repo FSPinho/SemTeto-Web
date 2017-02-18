@@ -36,15 +36,14 @@ class Home(models.Model):
         ('APARTAMENT', 'Apartamento')
     )
     type = CharField(verbose_name='Tipo de moradia', max_length=255, choices=HOME_TYPES, default='HOUSE')
+    
     building = CharField(verbose_name='Nome do prédio', default='', max_length=255)
-
     residents = IntegerField('Número de moradores', default=1)
     apartment = IntegerField(verbose_name='Número do apartamento', default=0)
     internet = BooleanField(verbose_name='Tem internet', default=True)
     internetPrice = DecimalField(verbose_name='Mensalidade da internet', default=0, max_digits=20, decimal_places=2)
     rooms = IntegerField(verbose_name='Número de quartos', default=2)
     price = DecimalField(verbose_name='Valor do aluguel', default=0, max_digits=20, decimal_places=2)
-
     comment = TextField(verbose_name='Comentários', max_length=1024 * 1024)
 
 
@@ -58,8 +57,9 @@ class Offer(models.Model):
     end = BigIntegerField(verbose_name='Data de término do anúncio', default=0)
 
     def isActive(self):
+        # Está ativo e o fim do anúncio ainda não chegou
         return self.active and datetime.datetime.now() < datetime.datetime.fromtimestamp(self.end)
 
-    def Renew(self, days):
+    def renew(self, days):
         date = (datetime.datetime.fromtimestamp(self.end) + timedelta(days=days))
         self.end = int(time.mktime(date.timetuple()))
